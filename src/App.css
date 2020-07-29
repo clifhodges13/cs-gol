@@ -18,12 +18,14 @@
   height: 20px;
   width: 20px;
   border: 1px solid rgba(255,255,255,.2);
+  border-radius: 10%;
   transition: all .5s ease;
 }
 
 .alive {
   background-image: linear-gradient(30deg, #2342a1, #6f90f3);
   border: 1px solid royalblue;
+  transform: scale(1.05);
 }
 
 .dead {

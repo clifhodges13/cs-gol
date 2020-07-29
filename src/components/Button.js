@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Button({ simulating, setSimulating }) {
+export default function Button({ simulating, init }) {
     return (
-        <button
-            onClick={() => setSimulating(!simulating)}    
-        >{simulating ? 'STOP' : 'START'}</button>
+        <button onClick={() => init()}>
+            {simulating ? 'STOP' : 'START'}
+        </button>
     )
 }
