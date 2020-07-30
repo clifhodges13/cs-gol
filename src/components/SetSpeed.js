@@ -1,21 +1,16 @@
 import React, { useState } from 'react'
 
-export default function Input({ speed, setSpeed }) {
-
-    const [ input, setInput ] = useState(speed)
-
-    const handleChange = e => {
-        setInput(e.target.value)
-    }
+export default function Input({ setSpeed }) {
 
     const submit = e => {
         e.preventDefault()
-        setSpeed(input)
+        setSpeed(e.target.value)
     }
 
     return (
         <form onSubmit={submit}>
-            <select onChange={handleChange}>
+            <select onChange={submit}>
+                <option value='' selected disabled hidden>Set the Speed</option>
                 <option value='110'>1</option>
                 <option value='100'>2</option>
                 <option value='90'>3</option>
@@ -28,7 +23,6 @@ export default function Input({ speed, setSpeed }) {
                 <option value='20'>10</option>
                 <option value='10'>11</option>
             </select>
-            <button type='submit'>Set Speed</button>
         </form>
     )
 }

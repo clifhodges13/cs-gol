@@ -3,9 +3,11 @@ import produce from 'immer';
 import Cell from './Cell';
 import Button from './Button';
 import Ticker from './Ticker';
-import Input from './Input';
+// import Input from './Input';
 import SetSpeed from './SetSpeed';
-import buildGrid, { gridWidth, gridHeight } from '../helpers/buildGrid';
+import { buildGrid, glider, pulsar, randomizeGrid, gridWidth, gridHeight } from '../helpers/buildGrid';
+import Reset from './Reset';
+import ColorPicker from './ColorPicker';
 
 export default function Grid() {
     const gridStyle = {
@@ -22,13 +24,23 @@ export default function Grid() {
     const runningCount = useRef(count);
     runningCount.current = count;
 
-    const [ speed, setSpeed ] = useState(10);
+    const [ speed, setSpeed ] = useState(50);
     const runningSpeed = useRef(speed);
     runningSpeed.current = speed;
 
+    const [ color, setColor ] = useState('#2342a1')
+
     useEffect(() => {
         setGrid(() => buildGrid());
-    }, [])
+    }, []);
+
+    const init = () => {
+        setSimulating(!simulating);
+        if(!simulating) {
+            isSimulating.current = true;
+            runSim();
+        }
+    };
 
     const createNewGrid = (i,j) => {
         const newGrid = produce(grid, gridCopy => {
@@ -37,18 +49,15 @@ export default function Grid() {
         setGrid(newGrid)
     };
 
-    const init = () => {
-        setSimulating(!simulating);
-        if(!simulating) {
-            isSimulating.current = true;
-            runSim();
-        }
-    }
+    const resetGrid = () => {
+        setCount(0)
+        setGrid(() => buildGrid());
+    };
 
     const runSim = useCallback(() => {
         if (!isSimulating.current) {
             return
-        }
+        };
         
         const ops = [
             [0,1],
@@ -66,14 +75,6 @@ export default function Grid() {
                 for(let i=0; i<gridWidth; i++) {
                     for(let j=0; j<gridHeight; j++) {
                         let neighbors = 0;
-                        // if(copy[j+1] && copy[i][j+1]   && copy[i][j+1]===1)   neighbors+=1;
-                        // if(copy[j-1] && copy[i][j-1]   && copy[i][j-1]===1)   neighbors+=1;
-                        // if(copy[i-1] && copy[i-1][j]   && copy[i-1][j]===1)   neighbors+=1;
-                        // if(copy[i+1] && copy[i+1][j]   && copy[i+1][j]===1)   neighbors+=1;
-                        // if(copy[i+1] && copy[i+1][j+1] && copy[i+1][j+1]===1) neighbors+=1;
-                        // if(copy[i+1] && copy[i+1][j-1] && copy[i+1][j-1]===1) neighbors+=1;
-                        // if(copy[i-1] && copy[i-1][j-1] && copy[i-1][j-1]===1) neighbors+=1;
-                        // if(copy[i-1] && copy[i-1][j+1] && copy[i-1][j+1]===1) neighbors+=1;
 
                         ops.forEach(([x,y]) => {
                             const newI = i+x;
@@ -91,24 +92,19 @@ export default function Grid() {
                     }
                 }
             })
-        })
+        });
+
         setTimeout(() => {
             setCount(runningCount.current + 1);
             runSim();
-        }, (speed*10)) // TODO: add 'speed' variable that is manipulateable by user input
+        }, (speed*10)); 
     }, [speed]);
 
     return (
         <div className="App-grid-wrapper">
-            <Ticker count={count} />
-            <Button
-                simulating={simulating}
-                setSimulating={setSimulating}
-                init={init}
-            />
 
             <div className="App-grid" style={gridStyle}>
-                {grid.map((row, i) =>
+                {grid && grid.map((row, i) =>
                     row.map((col, j) => (
                         <Cell
                             key={`${i}_${j}`}
@@ -116,18 +112,42 @@ export default function Grid() {
                             createNewGrid={createNewGrid}
                             i={i}
                             j={j}
+                            color={color}
                         />
                     )
                 ))}  
             </div>
-            {/* <Input
-                gridWidth={gridWidth}
-                gridHeight={gridHeight}
-            /> */}
-            <SetSpeed
-                speed={runningSpeed.current}
-                setSpeed={setSpeed}
-            />
+            <div className="App-control-board">
+                <Ticker count={count} />
+                <Button
+                    simulating={simulating}
+                    setSimulating={setSimulating}
+                    init={init}
+                />
+                <button style={{background: 'teal', color: 'azure'}}
+                        onClick={() => {
+                        setCount(0)
+                        setGrid(() => randomizeGrid())
+                    }}>Randomize</button>
+                <div style={{minWidth: '400px'}}>
+                    {!isSimulating.current ? (
+                        <>
+                        <div>
+                            <button onClick={() => setGrid(glider)}>Start with Glider</button>
+                            <button onClick={() => setGrid(pulsar)}>Start with Pulsar</button>
+                        </div>
+                        <SetSpeed
+                            speed={runningSpeed.current}
+                            setSpeed={setSpeed}
+                        />
+                        <Reset
+                            resetGrid={resetGrid}
+                        />
+                        </>
+                    ) : null}
+                </div>
+                <ColorPicker setColor={setColor} />
+            </div>
         </div>
     )
 }
