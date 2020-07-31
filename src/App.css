@@ -1,40 +1,91 @@
-.App-canvas{
-  background-color: cornsilk;
-  border: 5px;
-  border-color: black;
-
+* {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-button {
-  background-color: rgb(34, 20, 95);
-  border: 1px solid rgb(124, 110, 185);
-  color: white;
-  padding: 5px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  border-radius: 5px;
+.App-grid-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  height: 100vh;
+  /* width: 80vw; */
+  padding: 100px;
+  color: azure;
+  background-color: #333;
+  background: url('./images/electricity.jpg'), rgba(0,0,0,.8);
+  background-blend-mode: overlay;
+  background-position: top left;
 }
 
-button:hover{
-  background-color: rgb(104, 80, 212);
+.App-grid {
+  display: grid;
+  grid-row-gap: 5px;
+  grid-column-gap: 7px;
+}
+
+.App-right-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.App-control-board {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.circle-picker {
+  align-self: flex-end;
+}
+.circle-picker div {
+  width: 25px !important;
+  height: 25px !important;
+}
+
+.App-customize {
+  animation: scaleIn .2s ease;
 }
 
 .App-cell {
   display: inline-block;
   height: 20px;
   width: 20px;
-  margin: 10px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10%;
+  transition: all .5s ease;
 }
 
 .alive {
-  background-color: royalblue;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  transform: scale(1.05);
 }
 
 .dead {
-  background-color: grey;
+  background-color: transparent;
+}
+
+
+button, select {
+  margin: 10px;
+  min-width: 50px;
+  color: #333;
+  background-color: azure;
+  border: 1px solid #333;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

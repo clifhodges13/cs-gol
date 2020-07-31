@@ -1,13 +1,19 @@
-import React from 'react'
+import React from 'react';
 
-export default function Cell({ state }) {
-    if(state === 1) {
-        return (
-            <div className="App-cell alive"></div>
-        )
-    } else {
-        return (
-            <div className="App-cell dead"></div>
-        )
+export default function Cell({ alive, createNewGrid, i, j, color }) {
+    
+    const styles = {
+        backgroundColor: `${color}`
     }
-}
+
+    const aliveOrDead = alive ? 'alive' : 'dead';
+
+    return (
+        <div
+            style={alive ? styles : null}
+            className={`App-cell ${aliveOrDead}`}
+            onClick={() => createNewGrid(i,j)}
+        >
+        </div>
+    );
+};
