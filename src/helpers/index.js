@@ -1,6 +1,4 @@
-// Need 2 arrays. One to hold the data for the current view, and one to hold the data for the next view.
-
-// Double buffering: computing next view while showing current view (which has already been computed), then when next view is calculated, swap the views.
+import produce from 'immer';
 
 export const gridWidth = 25;
 export const gridHeight = 25;
@@ -16,38 +14,40 @@ export function buildGrid() {
     return rows;
 };
 
-export function buildGliderGrid() {
-    
-    const rows = [];
-
-    for (let i = 0; i < (gridWidth/2); i++) {
-        rows.push(Array.from(Array(gridHeight), ()=> 0))
-    };
-    let line = []
-    for (let i = 0; i < (gridWidth/2); i++) {
-        line.push(Array.from(Array(Math.floor(gridHeight/2)), ()=> 0))
-        // line.push(Array.from(Array(5, () => 1)))
-        // line.push(Array.from(Array(Math.floor(gridHeight/2)), ()=> 0))
-        rows.push(line)
-    };
-    for (let i = 0; i < (gridWidth/2-1); i++) {
-        rows.push(Array.from(Array(gridHeight), ()=> 0))
-    };
-
-    return rows;
-};
-
 export function randomizeGrid() {
-    const probabilityArray = [0,0,0,0,0,1]
+    const probabilityArray = [0,0,0,0,0,1] // 1 in 6 chance of getting live cell
     const rows = [];
 
     for (let i = 0; i < gridWidth; i++) {
-        // let random = () => probabilityArray[Math.random()*3];
         rows.push(Array.from(Array(gridHeight), () => probabilityArray[Math.floor(Math.random()*probabilityArray.length)]))
     };
 
     return rows;
 };
+
+export function createNewGrid(g, ops) {
+    return produce(g, copy => {
+        for(let i=0; i<gridWidth; i++) {
+            for(let j=0; j<gridHeight; j++) {
+                let neighbors = 0;
+
+                ops.forEach(([x,y]) => {
+                    const newI = i+x;
+                    const newJ = j+y;
+                    if(newI >= 0 && newI < gridWidth && newJ >=0 && newJ < gridHeight) {
+                        neighbors += g[newI][newJ];
+                    }
+                })
+
+                if (g[i][j]===1 && (neighbors < 2 || neighbors > 3)) {
+                    copy[i][j] = 0;
+                } else if (g[i][j]===0 && neighbors===3) {
+                    copy[i][j] = 1;
+                }
+            }
+        }
+    })
+}
 
 export const glider = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],

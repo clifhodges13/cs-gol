@@ -1,7 +1,7 @@
 import React from 'react';
-import { CompactPicker } from 'react-color';
+import { CirclePicker } from 'react-color';
 
 export default function ColorPicker({ setColor }) {
 
-    return <CompactPicker onChange={(color) => setColor(color.hex)} />
+    return <CirclePicker onChange={(color) => setColor(color.hex)} />
 }
